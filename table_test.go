@@ -16,5 +16,7 @@ func TestTable(t *testing.T) {
 		}
 	}
 
+	table.Style.SetBorderColor(Red)
+
 	table.Print()
 }
