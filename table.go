@@ -8,6 +8,7 @@ type table struct {
 	Rows   int
 	Cols   int
 	cells  [][]*cell
+	Style  *style
 	symbol *Symbol
 	widths []int
 }
@@ -26,6 +27,7 @@ func New(rows, cols int) *table {
 		Rows:   rows,
 		Cols:   cols,
 		cells:  cells,
+		Style:  &style{},
 		symbol: DefaultSymbol,
 	}
 }

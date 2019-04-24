@@ -32,7 +32,7 @@ func (t *table) encodeTopOrBottom(isTop bool) (s string) {
 	}
 
 	s += "\n"
-
+	s = parseColor(s, t.Style.borderColor)
 	return
 }
 
@@ -48,6 +48,7 @@ func (t *table) encodeMiddle() (s string) {
 	}
 	s += t.symbol.Right
 	s += "\n"
+	s = parseColor(s, t.Style.borderColor)
 	return
 }
 
@@ -71,12 +72,15 @@ func (t *table) encodeCell(text string, width int) (s string) {
 }
 
 func (t *table) encodeCells() (s string) {
+	vertical := t.symbol.Vertical
+	vertical = parseColor(vertical, t.Style.borderColor)
+
 	for r := 0; r < t.Rows; r++ {
 		for c := 0; c < t.Cols; c++ {
-			s += t.symbol.Vertical
+			s += vertical
 			s += t.encodeCell(t.cells[r][c].Text, t.widths[c])
 		}
-		s += t.symbol.Vertical
+		s += vertical
 		s += "\n"
 		if r < t.Rows-1 {
 			s += t.encodeMiddle()
