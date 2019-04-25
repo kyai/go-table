@@ -79,10 +79,19 @@ func (t *table) toString() (out string) {
 
 func (t *table) varWidths() {
 	maxWidth := 0
+
+	if t.thead != nil {
+		for _, th := range t.thead.cells {
+			if l := size(th.Text); l > maxWidth {
+				maxWidth = l
+			}
+		}
+	}
+
 	for r := 0; r < t.Rows; r++ {
 		for c := 0; c < t.Cols; c++ {
 			if ce := t.cells[r][c]; ce != nil {
-				if l := len(t.cells[r][c].Text); l > maxWidth {
+				if l := size(t.cells[r][c].Text); l > maxWidth {
 					maxWidth = l
 				}
 			}

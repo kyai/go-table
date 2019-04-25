@@ -75,7 +75,7 @@ func (t *table) encodeThead() (s string) {
 }
 
 func (t *table) encodeCell(text string, width int) (s string) {
-	l := len(text)
+	l := size(text)
 	if l > width {
 		return
 	}
