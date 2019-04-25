@@ -8,9 +8,15 @@ type table struct {
 	Rows   int
 	Cols   int
 	cells  [][]*cell
+	thead  *thead
 	Style  *style
 	symbol *Symbol
 	widths []int
+}
+
+type thead struct {
+	cells []*cell
+	Style *style
 }
 
 func New(rows, cols int) *table {
@@ -32,6 +38,24 @@ func New(rows, cols int) *table {
 	}
 }
 
+func NewThead(tds ...string) *thead {
+	var cells []*cell
+	for _, td := range tds {
+		cells = append(cells, &cell{
+			Text: td,
+		})
+	}
+
+	return &thead{
+		cells: cells,
+		Style: &style{},
+	}
+}
+
+func (t *table) SetThead(th *thead) {
+	t.thead = th
+}
+
 func (t *table) Row() {}
 
 func (t *table) Col() {}
@@ -47,6 +71,7 @@ func (t *table) Print() {
 func (t *table) toString() (out string) {
 	t.varWidths()
 	out += t.encodeTopOrBottom(true)
+	out += t.encodeThead()
 	out += t.encodeCells()
 	out += t.encodeTopOrBottom(false)
 	return

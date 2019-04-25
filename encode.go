@@ -52,6 +52,28 @@ func (t *table) encodeMiddle() (s string) {
 	return
 }
 
+func (t *table) encodeThead() (s string) {
+	if t.thead == nil {
+		return
+	}
+
+	vertical := t.symbol.Vertical
+	vertical = parseColor(vertical, t.Style.borderColor)
+
+	for c := 0; c < t.Cols; c++ {
+		text := ""
+		if c < len(t.thead.cells) {
+			text = t.thead.cells[c].Text
+		}
+		s += vertical
+		s += t.encodeCell(text, t.widths[c])
+	}
+	s += vertical
+	s += "\n"
+	s += t.encodeMiddle()
+	return
+}
+
 func (t *table) encodeCell(text string, width int) (s string) {
 	l := len(text)
 	if l > width {
