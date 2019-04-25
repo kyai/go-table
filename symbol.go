@@ -14,8 +14,14 @@ type Symbol struct {
 	Middle      string
 }
 
-var DefaultSymbol *Symbol
+var (
+	DefaultSymbol *Symbol
+	LineSymbol    *Symbol
+	NoneSymbol    *Symbol
+)
 
 func init() {
-	DefaultSymbol = &Symbol{"─", "│", "├", "┤", "┬", "┴", "┌", "┐", "└", "┘", "┼"}
+	LineSymbol = &Symbol{"─", "│", "├", "┤", "┬", "┴", "┌", "┐", "└", "┘", "┼"}
+	NoneSymbol = &Symbol{" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "}
+	DefaultSymbol = LineSymbol
 }
