@@ -5,9 +5,10 @@ import (
 )
 
 type cell struct {
-	Text string
-	Row  int
-	Col  int
+	Text  string
+	Row   int
+	Col   int
+	Style *style
 }
 
 func (t *table) Cell(row, col int) *cell {

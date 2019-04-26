@@ -6,14 +6,13 @@ type style struct {
 	fontWeight   weight
 	borderColor  color
 	borderWeight weight
-	isOblique    bool
-	isUnderline  bool
+	decorations  []decoration
 }
 
 type color int
 
 const (
-	Black color = iota + 30
+	Black color = iota
 	Red
 	Green
 	Yellow
@@ -26,17 +25,19 @@ const (
 type weight int
 
 const (
-	Normal weight = iota
-	Bolder
+	Bolder weight = iota + 1
 	Lighter
 )
 
 type decoration int
 
 const (
-	None decoration = iota
-	Oblique
+	Oblique decoration = iota + 3
 	Underline
+	Flicker
+	_
+	Reverse
+	Blanking
 )
 
 // functions of style
@@ -62,16 +63,5 @@ func (s *style) SetBorderWeight(w weight) {
 }
 
 func (s *style) SetDecoration(decorations ...decoration) {
-	for _, v := range decorations {
-		switch v {
-		case None:
-			s.isOblique = false
-			s.isUnderline = false
-			break
-		case Oblique:
-			s.isOblique = true
-		case Underline:
-			s.isUnderline = true
-		}
-	}
+	s.decorations = decorations
 }

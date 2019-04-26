@@ -61,12 +61,12 @@ func (t *table) encodeThead() (s string) {
 	vertical = parseColor(vertical, t.Style.borderColor)
 
 	for c := 0; c < t.Cols; c++ {
-		text := ""
+		ce := &cell{}
 		if c < len(t.thead.cells) {
-			text = t.thead.cells[c].Text
+			ce = t.thead.cells[c]
 		}
 		s += vertical
-		s += t.encodeCell(text, t.widths[c])
+		s += t.encodeCell(ce, t.widths[c], t.thead.Style)
 	}
 	s += vertical
 	s += "\n"
@@ -74,10 +74,11 @@ func (t *table) encodeThead() (s string) {
 	return
 }
 
-func (t *table) encodeCell(text string, width int) (s string) {
+func (t *table) encodeCell(c *cell, width int, s *style) string {
+	text := c.Text
 	l := size(text)
 	if l > width {
-		return
+		return ""
 	}
 
 	if (width-l)%2 > 0 {
@@ -90,7 +91,34 @@ func (t *table) encodeCell(text string, width int) (s string) {
 		text = blank + text + blank
 	}
 
+	if fontColor := lastValue(s.fontColor, c.Style.fontColor); fontColor != nil {
+		text = parseColor(text, fontColor.(color))
+	}
+	if fontBgColor := lastValue(s.fontBgColor, c.Style.fontBgColor); fontBgColor != nil {
+		text = parseBgColor(text, fontBgColor.(color))
+	}
+	if fontWeight := lastValue(s.fontWeight, c.Style.fontWeight); fontWeight != nil {
+		text = parseWeight(text, fontWeight.(weight))
+	}
+
 	return text
+}
+
+func lastValue(vs ...interface{}) interface{} {
+	var r interface{}
+	for _, v := range vs {
+		n := 0
+		switch v.(type) {
+		case color:
+			n = int(v.(color))
+		case weight:
+			n = int(v.(weight))
+		}
+		if n != 0 {
+			r = v
+		}
+	}
+	return r
 }
 
 func (t *table) encodeCells() (s string) {
@@ -100,7 +128,7 @@ func (t *table) encodeCells() (s string) {
 	for r := 0; r < t.Rows; r++ {
 		for c := 0; c < t.Cols; c++ {
 			s += vertical
-			s += t.encodeCell(t.cells[r][c].Text, t.widths[c])
+			s += t.encodeCell(t.cells[r][c], t.widths[c], t.Style)
 		}
 		s += vertical
 		s += "\n"

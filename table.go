@@ -24,7 +24,11 @@ func New(rows, cols int) *table {
 	for r := 0; r < rows; r++ {
 		slice := make([]*cell, cols)
 		for c := 0; c < cols; c++ {
-			slice[c] = &cell{}
+			slice[c] = &cell{
+				Row:   r,
+				Col:   c,
+				Style: &style{},
+			}
 		}
 		cells = append(cells, slice)
 	}
@@ -38,11 +42,15 @@ func New(rows, cols int) *table {
 	}
 }
 
+// TODO: row+1
 func NewThead(tds ...string) *thead {
 	var cells []*cell
-	for _, td := range tds {
+	for k, td := range tds {
 		cells = append(cells, &cell{
-			Text: td,
+			Row:   0,
+			Col:   k,
+			Text:  td,
+			Style: &style{},
 		})
 	}
 
