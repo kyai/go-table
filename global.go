@@ -30,3 +30,23 @@ func size(s string) int {
 	}
 	return size
 }
+
+func max(i ...int) int {
+	max := i[0]
+	for _, v := range i {
+		if v > max {
+			max = v
+		}
+	}
+	return max
+}
+
+func min(i ...int) int {
+	min := i[0]
+	for _, v := range i {
+		if v < min {
+			min = v
+		}
+	}
+	return min
+}

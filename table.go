@@ -11,6 +11,7 @@ type table struct {
 	thead  *thead
 	Style  *style
 	symbol *Symbol
+	layout layout
 	widths []int
 }
 
@@ -68,6 +69,17 @@ func (t *table) Row() {}
 
 func (t *table) Col() {}
 
+type layout int
+
+const (
+	Average layout = iota
+	Adaptive
+)
+
+func (t *table) SetLayout(l layout) {
+	t.layout = l
+}
+
 func (t *table) SetSymbol(s *Symbol) {
 	t.symbol = s
 }
@@ -86,31 +98,36 @@ func (t *table) toString() (out string) {
 }
 
 func (t *table) varWidths() {
-	maxWidth := 0
+	// Width of each column
+	widthPreCol := make([]int, t.Cols)
 
 	if t.thead != nil {
-		for _, th := range t.thead.cells {
-			if l := size(th.Text); l > maxWidth {
-				maxWidth = l
-			}
+		for k, th := range t.thead.cells {
+			widthPreCol[k] = size(th.Text)
 		}
 	}
 
 	for r := 0; r < t.Rows; r++ {
 		for c := 0; c < t.Cols; c++ {
 			if ce := t.cells[r][c]; ce != nil {
-				if l := size(t.cells[r][c].Text); l > maxWidth {
-					maxWidth = l
+				if l := size(ce.Text); l > widthPreCol[c] {
+					widthPreCol[c] = l
 				}
 			}
 		}
 	}
 
-	maxWidth += blankSize * 2
-
 	var widths []int
-	for i := 0; i < t.Cols; i++ {
-		widths = append(widths, maxWidth)
+
+	if t.layout == Adaptive {
+		for i := 0; i < t.Cols; i++ {
+			widths = append(widths, widthPreCol[i]+blankSize*2)
+		}
+	} else {
+		maxWidth := max(widthPreCol...)
+		for i := 0; i < t.Cols; i++ {
+			widths = append(widths, maxWidth+blankSize*2)
+		}
 	}
 
 	t.widths = widths
