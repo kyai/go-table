@@ -9,6 +9,10 @@ type style struct {
 	decorations  []decoration
 }
 
+func NewStyle() *style {
+	return &style{}
+}
+
 type color int
 
 const (

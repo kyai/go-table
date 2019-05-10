@@ -65,9 +65,21 @@ func (t *table) SetThead(th *thead) {
 	t.thead = th
 }
 
-func (t *table) Row() {}
+func (t *table) Row(n int) *cellset {
+	return &cellset{
+		cells: t.cells[n],
+	}
+}
 
-func (t *table) Col() {}
+func (t *table) Col(n int) *cellset {
+	cells := make([]*cell, 0)
+	for r := 0; r < t.Rows; r++ {
+		cells = append(cells, t.cells[r][n])
+	}
+	return &cellset{
+		cells: cells,
+	}
+}
 
 type layout int
 
